@@ -1,7 +1,6 @@
 // src/services/api.js
 
 // --- ENV ---
-const SOURCE = import.meta.env.VITE_DATA_SOURCE || "tmdb";
 const TMDB_KEY = import.meta.env.VITE_TMDB_KEY;
 const TMDB_BEARER = import.meta.env.VITE_TMDB_BEARER;
 
@@ -154,85 +153,7 @@ async function tmdbGenerate({ genre = "", year = "" } = {}) {
     .slice(0, 6);
 }
 
-/* =========================
-   JSON FALLBACK (lazy load)
-   ========================= */
-
-// JSON verisini sadece gerekirse yükler
-let localDataCache = null;
-async function loadLocalData() {
-  if (localDataCache) return localDataCache;
-  const mod = await import("../data/movies.sample.json");
-  localDataCache = mod.default;
-  return localDataCache;
-}
-
-async function jsonSearch({ q = "", genre = "", year = "", page = 1 } = {}) {
-  const localData = await loadLocalData();
-  let items = localData;
-  if (q)
-    items = items.filter((m) =>
-      (m.title || "").toLowerCase().includes(q.toLowerCase())
-    );
-  if (genre) items = items.filter((m) => (m.genres || []).includes(genre));
-  if (year) items = items.filter((m) => String(m.year) === String(year));
-  const perPage = 24;
-  return {
-    items: items.slice((page - 1) * perPage, page * perPage),
-    hasMore: items.length > page * perPage,
-  };
-}
-
-async function jsonGetById(id) {
-  const localData = await loadLocalData();
-  return localData.find((m) => String(m.id) === String(id));
-}
-
-async function jsonFeatured() {
-  const localData = await loadLocalData();
-  return localData[Math.floor(Math.random() * localData.length)];
-}
-
-async function jsonSimilar(id) {
-  const localData = await loadLocalData();
-  const m = localData.find((x) => String(x.id) === String(id));
-  if (!m) return [];
-  return localData
-    .filter(
-      (x) => x.id !== m.id && x.genres?.some((g) => m.genres?.includes(g))
-    )
-    .slice(0, 12);
-}
-
-async function jsonGenerate({ genre = "", year = "" } = {}) {
-  const localData = await loadLocalData();
-  let items = localData;
-  if (genre) items = items.filter((m) => m.genres?.includes(genre));
-  if (year) items = items.filter((m) => String(m.year) === String(year));
-  return items.sort(() => Math.random() - 0.5).slice(0, 6);
-}
-
-// --- Dışa aktarılan ortak API ---
-export async function searchMovies(q) {
-  if (SOURCE === "json") return await jsonSearch(q || {});
-  return tmdbSearch(q || {});
-}
-export async function getById(id) {
-  if (SOURCE === "json") return await jsonGetById(id);
-  return tmdbGetById(id);
-}
-export async function getFeatured() {
-  if (SOURCE === "json") return await jsonFeatured();
-  return tmdbFeatured();
-}
-export async function getSimilar(id) {
-  if (SOURCE === "json") return await jsonSimilar(id);
-  return tmdbSimilar(id);
-}
-export async function generateBy(q) {
-  if (SOURCE === "json") return await jsonGenerate(q || {});
-  return tmdbGenerate(q || {});
-}
+// --- Curated (kategoriye göre listeler) ---
 async function tmdbCurated(slug) {
   let path = "";
   switch (slug) {
@@ -255,22 +176,22 @@ async function tmdbCurated(slug) {
   return (json.results || []).map(tmdbMap).slice(0, 12);
 }
 
-async function jsonCurated(slug) {
-  const localData = await loadLocalData();
-  // slug'a göre basit filtreleme
-  if (slug === "top") {
-    return [...localData]
-      .sort((a, b) => (b.imdb || 0) - (a.imdb || 0))
-      .slice(0, 12);
-  }
-  if (slug === "trending") {
-    return localData.slice(0, 12);
-  }
-  return localData.slice(0, 12);
+// --- Dışa aktarılan API (yalnızca TMDb) ---
+export async function searchMovies(q) {
+  return tmdbSearch(q || {});
 }
-
-// Export
+export async function getById(id) {
+  return tmdbGetById(id);
+}
+export async function getFeatured() {
+  return tmdbFeatured();
+}
+export async function getSimilar(id) {
+  return tmdbSimilar(id);
+}
+export async function generateBy(q) {
+  return tmdbGenerate(q || {});
+}
 export async function getCurated(slug) {
-  if (SOURCE === "json") return await jsonCurated(slug);
   return tmdbCurated(slug);
 }
