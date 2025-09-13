@@ -1,0 +1,229 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+/* =========================================================
+   Movie Card (3/4 oran, hover glow + shine + grid uyumu)
+   ========================================================= */
+.movie-card {
+  background: $card;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius;
+  box-shadow: $shadow;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
+
+  transition: transform 220ms ease, box-shadow 220ms ease,
+    border-color 220ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Poster/Thumb alanı — 3/4 oran (+ fallback) */
+  .thumb,
+  .poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #1c1c1f;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+    /* aspect-ratio fallback */
+    @supports not (aspect-ratio: 3 / 4) {
+      &::before {
+        content: "";
+        display: block;
+        padding-top: calc(100% * 4 / 3); /* 3/4 oran */
+      }
+      > img,
+      > .shine {
+        position: absolute;
+        inset: 0;
+      }
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transform: translateZ(0); /* GPU hint */
+      transition: transform 320ms ease;
+    }
+
+    /* Shine spot’u (JS inline pos/size) */
+    .shine {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+  }
+
+  /* Hover’da görseli minicik büyüt */
+  &:hover .thumb img,
+  &:hover .poster img {
+    transform: scale(1.03);
+  }
+
+  /* Bilgi alanı */
+  .info {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .title {
+    font-weight: 700;
+    line-height: 1.2;
+    @include lineClamp(1);
+
+    a,
+    & {
+      color: $text;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+  }
+
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+
+    .title {
+      color: $text;
+      font-weight: 600;
+      font-size: 14px;
+      flex: 1;
+      @include lineClamp(1);
+    }
+
+    .year {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-left: 6px;
+      flex-shrink: 0;
+      z-index: 9999;
+    }
+  }
+
+  /* Aksiyonlar / rozet */
+  .row,
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: space-between;
+
+    .left,
+    .right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    button {
+      flex: 0 0 auto;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: $text;
+      padding: 8px 10px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color 180ms ease, transform 120ms ease,
+        background 180ms ease;
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.24);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      &:active {
+        transform: scale(0.98);
+      }
+
+      &.active {
+        border-color: $primary;
+        box-shadow: 0 0 0 2px rgba($primary, 0.18) inset;
+      }
+    }
+  }
+
+  /* Erişilebilirlik: klavye focus */
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+  }
+}
+
+/* ---------------------------------------------------------
+   Grid (yalnızca movie-grid'i etkile)
+   --------------------------------------------------------- */
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+/* Reduced Motion: animasyonları yumuşat/kapas */
+@media (prefers-reduced-motion: reduce) {
+  .movie-card {
+    transition: none;
+
+    &:hover {
+      transform: none;
+      box-shadow: $shadow;
+    }
+    .poster img,
+    .thumb img {
+      transition: none;
+    }
+    .actions button {
+      transition: none;
+    }
+  }
+}

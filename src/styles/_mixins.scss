@@ -1,0 +1,35 @@
+// Sayfayı ortalamak için container mixin
+@mixin container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+// Uzun metinleri kırpmak için line clamp
+@mixin lineClamp($n) {
+  display: -webkit-box;
+  -webkit-line-clamp: $n;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Flex center (hızlı ortalama)
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Responsive breakpointler
+$breakpoints: (
+  "xl": 1200px,
+  "lg": 992px,
+  "md": 768px,
+  "sm": 540px,
+);
+
+@mixin respond($bp) {
+  @media (max-width: map-get($breakpoints, $bp)) {
+    @content;
+  }
+}

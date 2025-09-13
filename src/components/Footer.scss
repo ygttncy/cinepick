@@ -1,0 +1,16 @@
+@use "../styles/_mixins" as *;
+
+.footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: auto;
+
+  .inner {
+    @include container;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 64px;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+}

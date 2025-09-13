@@ -1,0 +1,76 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.categories {
+  .container {
+    @include container;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 8px auto 6px;
+    h2 {
+      margin: 0;
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 12px;
+    margin: 12px auto 20px;
+
+    @include respond("xl") {
+      grid-template-columns: repeat(8, 1fr);
+    }
+    @include respond("lg") {
+      grid-template-columns: repeat(6, 1fr);
+    }
+    @include respond("md") {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @include respond("sm") {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @include respond("xs") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .cat-card-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .cat-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: $radius;
+    padding: 16px 12px;
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    transition: 0.18s ease;
+    user-select: none;
+
+    .icon {
+      font-size: 22px;
+      opacity: 0.9;
+    }
+    .name {
+      font-weight: 600;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}

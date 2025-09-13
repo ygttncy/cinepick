@@ -1,0 +1,57 @@
+@use "../styles/variables" as *;
+
+.generator {
+  border: none;
+  border-radius: $radius;
+  width: min(760px, 96vw);
+  background: $card;
+  color: $text;
+  padding: 16px;
+  box-shadow: $shadow;
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  h3 {
+    margin: 4px 0 12px;
+  }
+
+  .row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    select,
+    button {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #161622;
+      color: $text;
+    }
+  }
+
+  .results {
+    margin-top: 14px;
+    display: grid;
+    gap: 8px;
+
+    li {
+      background: #11121a;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+
+      a {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+      span {
+        color: $muted;
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.filters {
+  @include container;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 8px auto 18px;
+
+  input,
+  select {
+    background: $card;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: $text;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  input {
+    flex: 1 1 260px;
+  }
+  select {
+    flex: 0 1 160px;
+  }
+}
