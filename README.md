@@ -3,7 +3,7 @@
 **CinePick**, en iyi film önerilerini keşfetmeni sağlayan modern bir web uygulamasıdır.  
 React + Vite altyapısı, SCSS tasarımı ve Framer Motion animasyonlarıyla şık, hızlı ve keyifli bir deneyim sunar.  
 
-🌐 Canlı Demo: [pickcine.netlify.app]([https://pickcine.netlify.app/all])  
+🌐 Canlı Demo: [pickcine.netlify.app]((https://pickcine.netlify.app/all))  
 
 ---
 
